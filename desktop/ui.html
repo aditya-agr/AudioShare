@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AudioShare</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 108 108'%3E%3Cdefs%3E%3ClinearGradient id='g' x2='1' y2='1'%3E%3Cstop stop-color='%237C5CFF'/%3E%3Cstop offset='1' stop-color='%2322D3EE'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='108' height='108' rx='28' fill='url(%23g)'/%3E%3Ccircle cx='54' cy='54' r='7' fill='white'/%3E%3Cpath d='M63.9 44.1A14 14 0 0 1 63.9 63.9M44.1 44.1A14 14 0 0 0 44.1 63.9M70.97 37.03A24 24 0 0 1 70.97 70.97M37.03 37.03A24 24 0 0 0 37.03 70.97' stroke='white' stroke-width='5' stroke-linecap='round' fill='none'/%3E%3C/svg%3E">
+<style>
+  :root {
+    --bg: #F4F5FA; --card: #FFFFFF; --card-hi: #ECEEF6; --line: #E2E5EF;
+    --text: #12142A; --dim: #5D6380; --violet: #7C5CFF; --cyan: #0891B2; --pink: #DB2777; --danger: #E11D48;
+    --brand: linear-gradient(135deg, #7C5CFF, #22D3EE);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0B0D17; --card: #151827; --card-hi: #1E2236; --line: #262A40;
+      --text: #F2F3F8; --dim: #9AA0B8; --cyan: #22D3EE; --pink: #F472B6; --danger: #FF5470;
+    }
+  }
+  * { box-sizing: border-box; margin: 0; }
+  body {
+    background: var(--bg); color: var(--text); min-height: 100vh;
+    font: 15px/1.4 "Segoe UI Variable Text", "Segoe UI", system-ui, -apple-system, Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased; user-select: none;
+  }
+  main { max-width: 440px; margin: 0 auto; padding: 20px 20px 28px; display: flex; flex-direction: column; gap: 16px; }
+  svg.i { width: 24px; height: 24px; fill: currentColor; flex: none; }
+
+  header { display: flex; align-items: center; gap: 12px; }
+  .logo { width: 44px; height: 44px; border-radius: 14px; background: var(--brand); display: grid; place-items: center; color: #fff; }
+  .logo svg { width: 26px; height: 26px; }
+  h1 { font-size: 22px; font-weight: 700; letter-spacing: -.01em; }
+  .sub { font-size: 13px; color: var(--dim); }
+
+  .hero {
+    background: var(--card); border: 1px solid var(--line); border-radius: 28px; padding: 24px;
+    display: flex; flex-direction: column; align-items: center; text-align: center; transition: border-color .3s;
+  }
+  .hero.live { border-color: color-mix(in srgb, var(--violet) 50%, transparent); }
+  .pulse { position: relative; width: 150px; height: 150px; display: grid; place-items: center; }
+  .ring { position: absolute; inset: 0; border-radius: 50%; border: 2px solid var(--violet); opacity: 0; }
+  .live .ring { animation: ring 2.4s linear infinite; }
+  .live .ring:nth-child(2) { animation-delay: -.8s; border-color: #4FA3F7; }
+  .live .ring:nth-child(3) { animation-delay: -1.6s; border-color: #22D3EE; }
+  @keyframes ring { from { transform: scale(.5); opacity: .6; } to { transform: scale(1); opacity: 0; } }
+  @media (prefers-reduced-motion: reduce) { .live .ring { animation: none; opacity: .35; } }
+  .orb { width: 76px; height: 76px; border-radius: 50%; background: var(--card-hi); color: var(--dim); display: grid; place-items: center; transition: .3s; }
+  .live .orb { background: var(--brand); color: #fff; }
+  .orb svg { width: 40px; height: 40px; }
+  .hero h2 { margin-top: 12px; font-size: 24px; font-weight: 600; }
+  .hero p { margin-top: 4px; color: var(--dim); }
+  .chip { margin-top: 16px; display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 99px; background: var(--card-hi); font-size: 14px; font-weight: 500; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--dim); }
+  .dot.on { background: var(--cyan); }
+
+  .label { font-size: 12px; font-weight: 600; letter-spacing: .06em; color: var(--dim); margin: 8px 0 0 4px; }
+  .mode {
+    width: 100%; display: flex; align-items: center; gap: 16px; padding: 16px; border: 0; border-radius: 20px;
+    background: var(--card); color: var(--text); font: inherit; text-align: left; cursor: pointer; transition: transform .1s, background .2s;
+  }
+  .mode:hover { background: color-mix(in srgb, var(--card) 85%, var(--violet)); }
+  .mode:active { transform: scale(.98); }
+  .mode:focus-visible, .nudge:focus-visible, .stop:focus-visible, input:focus-visible { outline: 2px solid var(--violet); outline-offset: 2px; }
+  .tile { width: 48px; height: 48px; border-radius: 14px; display: grid; place-items: center; flex: none; }
+  .mode b { display: block; font-size: 16px; font-weight: 600; }
+  .mode small { display: block; font-size: 13px; color: var(--dim); }
+  .mode .grow { flex: 1; }
+  .mode .chev { color: var(--dim); }
+  .hint { text-align: center; font-size: 13px; color: var(--dim); margin-top: 8px; }
+
+  .card { background: var(--card); border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 8px; }
+  .row { display: flex; align-items: center; gap: 8px; }
+  .card h3 { flex: 1; font-size: 16px; font-weight: 600; }
+  .ms { color: var(--cyan); font-size: 16px; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .card p { font-size: 13px; color: var(--dim); }
+  .nudge { width: 40px; height: 40px; border-radius: 50%; border: 0; background: var(--card-hi); color: var(--text); font-size: 22px; cursor: pointer; flex: none; }
+  input[type=range] { flex: 1; accent-color: var(--violet); height: 24px; margin: 0 8px; }
+
+  .stop {
+    height: 56px; border: 0; border-radius: 18px; cursor: pointer; font: inherit; font-size: 16px; font-weight: 600;
+    background: color-mix(in srgb, var(--danger) 15%, transparent); color: var(--danger);
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .stop svg { width: 20px; height: 20px; }
+  .error { color: var(--danger); font-size: 13px; text-align: center; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute">
+  <symbol id="cast" viewBox="26 26 56 56"><circle cx="54" cy="54" r="7"/><path d="M63.9 44.1A14 14 0 0 1 63.9 63.9M44.1 44.1A14 14 0 0 0 44.1 63.9M70.97 37.03A24 24 0 0 1 70.97 70.97M37.03 37.03A24 24 0 0 0 37.03 70.97" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/></symbol>
+  <symbol id="eq" viewBox="0 0 24 24"><path d="M7 18h2V6H7v12zM11 22h2V2h-2v20zM3 14h2v-4H3v4zM15 18h2V6h-2v12zM19 10v4h2v-4h-2z"/></symbol>
+  <symbol id="speaker" viewBox="0 0 24 24"><path d="M17 2H7c-1.1 0-2 .9-2 2v16c0 1.1.9 1.99 2 1.99L17 22c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM12 4c1.1 0 2 .9 2 2s-.9 2-2 2c-1.11 0-2-.9-2-2s.89-2 2-2zM12 20c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zM12 12c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></symbol>
+  <symbol id="chev" viewBox="0 0 24 24"><path d="M10 6 8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></symbol>
+  <symbol id="stop" viewBox="0 0 24 24"><path d="M6 6h12v12H6z"/></symbol>
+</svg>
+
+<main>
+  <header>
+    <div class="logo"><svg class="i"><use href="#cast"/></svg></div>
+    <div><h1>AudioShare</h1><div class="sub">One sound, every speaker</div></div>
+  </header>
+
+  <section class="hero" id="hero">
+    <div class="pulse"><i class="ring"></i><i class="ring"></i><i class="ring"></i>
+      <div class="orb"><svg class="i"><use href="#cast"/></svg></div></div>
+    <h2 id="title">Ready</h2>
+    <p id="status">Choose how this PC joins in</p>
+    <div class="chip" id="chip" hidden><i class="dot" id="dot"></i><span id="count">0 speakers connected</span></div>
+  </section>
+
+  <div id="idle">
+    <div class="label">START A SESSION</div>
+    <div style="display:flex;flex-direction:column;gap:12px;margin-top:12px">
+      <button class="mode" data-go="host">
+        <span class="tile" style="background:color-mix(in srgb,var(--violet) 15%,transparent);color:var(--violet)"><svg class="i"><use href="#eq"/></svg></span>
+        <span class="grow"><b>Share this PC's audio</b><small>YouTube, Spotify, anything playing here</small></span>
+        <svg class="i chev"><use href="#chev"/></svg>
+      </button>
+      <button class="mode" data-go="join">
+        <span class="tile" style="background:color-mix(in srgb,var(--pink) 15%,transparent);color:var(--pink)"><svg class="i"><use href="#speaker"/></svg></span>
+        <span class="grow"><b>Join as speaker</b><small>Play what a phone on this Wi-Fi shares</small></span>
+        <svg class="i chev"><use href="#chev"/></svg>
+      </button>
+    </div>
+    <p class="hint">All devices must be on the same Wi-Fi network</p>
+  </div>
+
+  <div id="active" hidden style="display:flex;flex-direction:column;gap:12px">
+    <div class="card" id="delayCard">
+      <div class="row"><h3>Speaker delay</h3><span class="ms" id="ms">0 ms</span></div>
+      <p>If this speaker plays ahead of the others, add delay until they sound like one.</p>
+      <div class="row">
+        <button class="nudge" data-step="-10" aria-label="Less delay">−</button>
+        <input type="range" id="delay" min="0" max="500" step="1" value="0" aria-label="Speaker delay">
+        <button class="nudge" data-step="10" aria-label="More delay">+</button>
+      </div>
+    </div>
+    <div class="card" id="hostNote"><p>This PC's own speakers play about 0.25 s ahead of the phones. Mute them, or let the phones be the speakers.</p></div>
+    <button class="stop" data-go="stop"><svg class="i"><use href="#stop"/></svg>Stop</button>
+  </div>
+  <p class="error" id="error" hidden></p>
+</main>
+
+<script>
+const $ = id => document.getElementById(id);
+let dragging = false;
+
+function render(s) {
+  const live = s.mode !== null;
+  $('hero').classList.toggle('live', live);
+  $('title').textContent = { host: 'Sharing this PC', join: 'Speaker mode' }[s.mode] || 'Ready';
+  $('status').textContent = s.status;
+  $('chip').hidden = s.mode !== 'host';
+  $('dot').classList.toggle('on', s.clients > 0);
+  $('count').textContent = `${s.clients} speaker${s.clients === 1 ? '' : 's'} connected`;
+  $('idle').hidden = live;
+  $('active').hidden = !live;
+  $('delayCard').hidden = s.mode !== 'join';
+  $('hostNote').hidden = s.mode !== 'host';
+  if (!dragging) $('delay').value = s.delay;
+  $('ms').textContent = `${s.delay} ms`;
+}
+
+async function call(path) {
+  const r = await fetch(path, { method: 'POST' });
+  const body = await r.json().catch(() => ({}));
+  $('error').hidden = r.ok;
+  if (!r.ok) { $('error').textContent = body.error || 'Something went wrong'; return poll(); }
+  render(body);
+}
+
+async function poll() {
+  try { render(await (await fetch('/state')).json()); } catch { $('status').textContent = 'AudioShare has stopped. Close this window.'; }
+}
+
+document.addEventListener('click', e => {
+  const go = e.target.closest('[data-go]');
+  if (go) call('/' + go.dataset.go);
+  const step = e.target.closest('[data-step]');
+  if (step) call(`/delay?ms=${Math.max(0, Math.min(500, +$('delay').value + +step.dataset.step))}`);
+});
+$('delay').addEventListener('input', e => { dragging = true; $('ms').textContent = `${e.target.value} ms`; call(`/delay?ms=${e.target.value}`); });
+$('delay').addEventListener('change', () => { dragging = false; });
+addEventListener('pagehide', () => navigator.sendBeacon('/quit'));  // window closed: app quits (a reload cancels it)
+
+poll();
+setInterval(poll, 500);
+</script>
+</body>
+</html>
