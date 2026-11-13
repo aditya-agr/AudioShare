@@ -2,6 +2,7 @@
 import json
 import os
 import subprocess
+import sys
 import threading
 import time
 import webbrowser
@@ -114,7 +115,8 @@ def serve():
     server.origin_host = f"127.0.0.1:{server.server_port}"
     url = f"http://{server.origin_host}/"
     threading.Thread(target=server.serve_forever, daemon=True).start()
-    print(f"AudioShare window: {url}  (Ctrl+C or close the window to quit)")
+    if sys.stdout:  # None in the windowed .exe
+        print(f"AudioShare window: {url}  (Ctrl+C or close the window to quit)")
     open_window(url)
     while True:
         time.sleep(0.5)
