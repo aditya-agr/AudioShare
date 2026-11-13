@@ -70,3 +70,7 @@ python audioshare.py host         # terminal: share this PC's audio
 python test_audioshare.py         # sync scheduler self-check
 .\build.ps1                       # builds dist\AudioShare.exe
 ```
+
+## License
+
+[MIT](LICENSE) © 2026 Aditya Agrawal
