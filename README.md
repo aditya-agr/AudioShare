@@ -1,8 +1,14 @@
+<img src="docs/banner.png" alt="AudioShare: one sound, every speaker. Android and Windows, over Wi-Fi or a hotspot, free and open source.">
+
 # AudioShare
 
 **One sound, every speaker.** Play music from one phone or laptop through several phones, laptops and Bluetooth speakers at the same time, in sync.
 
 Every device plays the same audio on a shared clock, so a room full of cheap speakers sounds like one big system. It works over home Wi-Fi or a phone hotspot, with no internet or account needed.
+
+<p align="center">
+  <img src="docs/demo.gif" width="720" alt="Animation: a host device sends each beat to a phone, laptop, Bluetooth speaker and tablet, which all play it at the same moment">
+</p>
 
 <p>
   <img src="docs/phone-light.png" width="240" alt="AudioShare on Android, light mode">
@@ -12,7 +18,10 @@ Every device plays the same audio on a shared clock, so a room full of cheap spe
 
 ## Download
 
-Get the latest files from the [**Releases**](../../releases/latest) page:
+[![Download for Android](https://img.shields.io/badge/Download-Android%20APK-7C5CFF?style=for-the-badge&logo=android&logoColor=white)](../../releases/latest/download/AudioShare.apk)
+[![Download for Windows](https://img.shields.io/badge/Download-Windows%20EXE-22D3EE?style=for-the-badge&logo=windows&logoColor=white)](../../releases/latest/download/AudioShare.exe)
+
+Or get them from the [**Releases**](../../releases/latest) page:
 
 | File | For |
 |---|---|
@@ -20,6 +29,8 @@ Get the latest files from the [**Releases**](../../releases/latest) page:
 | `AudioShare.exe` | Windows 10 / 11 laptops and PCs |
 
 ## How to use it
+
+<img src="docs/how-it-works.png" width="440" align="right" alt="How to use AudioShare in four steps: get on one network, join as speaker, share or play, fine-tune the sync">
 
 1. Connect every device to the **same Wi-Fi**, or to one device's **hotspot**.
 2. On each device that should play the music, open AudioShare and tap **Join as speaker**. Connect a Bluetooth speaker to it if you like.
@@ -29,6 +40,8 @@ Get the latest files from the [**Releases**](../../releases/latest) page:
 4. If one speaker sounds a little ahead of the rest, move the **Speaker delay** slider on that device until they sound like one. Bluetooth speakers each add their own delay, so this is normal.
 
 > The host's "Speakers connected" count shows who has joined.
+
+<br clear="right">
 
 ## Installing
 
